@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bombyx Population Model - Interactive Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Bombyx Population Model</h1>
+            <p>Simulation interactive du modèle de croissance logistique discret</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Section description du projet -->
+        <section class="project-description">
+            <div class="card">
+                <h2>Description du projet</h2>
+                <p>Ce simulateur implémente le modèle de croissance logistique discret appliqué à la population du Bombyx (ver à soie). 
+                Le modèle suit l'équation <strong>x(i+1) = k × x(i) × (1000 - x(i)) / 1000</strong> où k est le taux de croissance.</p>
+                
+                <p>Le modèle illustre les comportements fondamentaux des systèmes dynamiques non-linéaires :</p>
+                <ul>
+                    <li><strong>Convergence stable</strong> (k &lt; 3.0) : la population tend vers un équilibre</li>
+                    <li><strong>Oscillations périodiques</strong> (3.0 &lt; k &lt; 3.45) : alternance entre plusieurs états</li>
+                    <li><strong>Chaos déterministe</strong> (k &gt; 3.45) : comportement imprévisible mais déterministe</li>
+                </ul>
+                
+                <p>Cette simulation permet d'explorer ces régimes dynamiques et d'analyser les transitions entre comportements.</p>
+            </div>
+        </section>
+
+        <!-- Section des contrôles -->
+        <section class="controls-section">
+            <div class="card">
+                <h2>Paramètres de simulation</h2>
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label for="initialPop">Population initiale (n₀):</label>
+                        <input type="number" id="initialPop" value="10" min="1" max="500" step="1">
+                        <span class="range-display">10</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="growthRate">Taux de croissance (k):</label>
+                        <input type="range" id="growthRate" value="3.3" min="1.0" max="4.0" step="0.01">
+                        <span class="range-display">3.30</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="generations">Générations:</label>
+                        <input type="range" id="generations" value="100" min="50" max="300" step="10">
+                        <span class="range-display">100</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="simulateBtn" class="btn btn-primary">Simuler</button>
+                    <button id="resetBtn" class="btn btn-secondary">Reset</button>
+                    <button id="bifurcationBtn" class="btn btn-special">Bifurcation</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section des résultats -->
+        <section class="results-section">
+            <div class="card">
+                <h2>Évolution de la population</h2>
+                <div class="chart-container">
+                    <canvas id="populationChart"></canvas>
+                </div>
+                <div class="stats" id="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Population finale:</span>
+                        <span class="stat-value" id="finalPop">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Comportement:</span>
+                        <span class="stat-value" id="behavior">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Stabilité:</span>
+                        <span class="stat-value" id="stability">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section de la bifurcation -->
+        <section class="bifurcation-section" id="bifurcationSection" style="display: none;">
+            <div class="card">
+                <h2>Carte de bifurcation</h2>
+                <div class="bifurcation-controls">
+                    <label for="kMin">k min:</label>
+                    <input type="number" id="kMin" value="1.0" min="1.0" max="3.9" step="0.1">
+                    
+                    <label for="kMax">k max:</label>
+                    <input type="number" id="kMax" value="4.0" min="1.1" max="4.0" step="0.1">
+                    
+                    <button id="generateBifurcation" class="btn btn-primary">Générer</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="bifurcationChart"></canvas>
+                </div>
+                <div class="progress-bar" id="progressBar" style="display: none;">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section d'information -->
+        <section class="info-section">
+            <div class="card">
+                <h2>À propos du modèle</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h3>Équation</h3>
+                        <p class="equation">x<sub>i+1</sub> = k × x<sub>i</sub> × (1000 - x<sub>i</sub>) / 1000</p>
+                        <p>Modèle logistique discret avec capacité de charge = 1000</p>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h3>Comportements</h3>
+                        <ul>
+                            <li><strong>k &lt; 3.0:</strong> Convergence stable</li>
+                            <li><strong>3.0 &lt; k &lt; 3.45:</strong> Oscillations périodiques</li>
+                            <li><strong>k &gt; 3.45:</strong> Chaos déterministe</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h3>Applications</h3>
+                        <ul>
+                            <li>Dynamique des populations</li>
+                            <li>Systèmes non-linéaires</li>
+                            <li>Théorie du chaos</li>
+                            <li>Modélisation en biologie</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Ilona Emefa - Portfolio pour candidature Bachelor 3ème année IA</p>
+            <p>Projet de modélisation mathématique et visualisation interactive</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
