@@ -74,5 +74,5 @@ my_bombyx/
 
 ## Auteur
 
-Ilona Emefa - Projet de portfolio pour candidature Bachelor 3ème année IA
+CAPO Ilona Emefa - Projet de portfolio
 # my_bombyx
